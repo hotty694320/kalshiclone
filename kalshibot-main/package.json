@@ -1,0 +1,54 @@
+{
+  "name": "kalshibot",
+  "version": "2.0.0",
+  "description": "High-frequency arbitrage bot for Kalshi BTC contracts with Binance WebSocket, Polymarket signals, RedStone oracle, and Mission Control UI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "legacy": "node kalshi-bot.js",
+    "dev": "node server.js",
+    "test": "node --test",
+    "check": "node --check server.js && node --check public/app.js && node --check public/order-ticket.js && node --check public/kalshi-chart.js && node --check public/kalshi-header.js && node --check public/kalshi-countdown.js && node --check bot/kalshi.js && node --check bot/demo-kalshi-now.js && node --check bot/state.js && node --check lib/kalshi-btc-history.js && node --check lib/market-rollover.js && node --check lib/prediction-dataset-store.js && node --check lib/settlement-probability-model.js && node --check lib/prediction-engine.js && node --check agents/core/master-agent.js",
+    "backtest": "node backtest/backtest.js",
+    "backtest:verbose": "node backtest/backtest.js --verbose",
+    "backtest:30d": "node backtest/backtest.js --days 30"
+  },
+  "keywords": [
+    "kalshi",
+    "trading",
+    "bot",
+    "prediction-markets",
+    "bitcoin",
+    "arbitrage",
+    "binance",
+    "polymarket",
+    "redstone"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.99.3",
+    "axios": "^1.19.0",
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.22.2",
+    "socket.io": "^4.8.3",
+    "ws": "^8.21.1"
+  },
+  "optionalDependencies": {
+    "@langchain/openai": "^0.3.0",
+    "langchain": "^0.3.0"
+  },
+  "overrides": {
+    "engine.io": {
+      ".": "6.6.9",
+      "ws": "8.21.1"
+    },
+    "path-to-regexp": "0.1.13",
+    "socket.io-adapter": {
+      ".": "2.5.8",
+      "ws": "8.21.1"
+    },
+    "socket.io-parser": "4.2.7"
+  }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalshibot | BTC 15 min</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">◆</span><span>KALSHIBOT</span></div>
+    <div class="topbar-status">
+      <div class="connection-dots">
+        <span class="dot" id="dot-binance"></span><span>BIN</span>
+        <span class="dot" id="dot-polymarket"></span><span>POLY</span>
+        <span class="dot" id="dot-kalshi"></span><span>KAL</span>
+        <span class="dot" id="dot-redstone"></span><span>RED</span>
+      </div>
+      <span class="uptime" id="uptime">00:00:00</span>
+    </div>
+  </header>
+
+  <main class="terminal-layout">
+    <section class="market-stage">
+      <header class="market-header">
+        <div class="market-title-wrap">
+          <div class="bitcoin-mark">₿</div>
+          <div>
+            <div class="eyebrow">BTC</div>
+            <h1>BTC 15 min</h1>
+            <p id="market-subtitle">Live Kalshi prediction market <span class="live-dot">● LIVE</span></p>
+          </div>
+        </div>
+        <div class="market-brief">
+          <div class="flex items-stretch gap-2 kalshi-price-pair">
+            <div class="flex flex-col items-start gap-0.5 kalshi-price-column">
+              <span class="font-kalshi-sans typ-overline-x10 text-text-x20">To Beat</span>
+              <h2 class="m-0 font-kalshi-condensed typ-headline-x10 typ-tabular text-text-x10" id="market-target" style="font-size: 24px; line-height: 1.1;">--</h2>
+              <span class="font-kalshi-sans font-normal typ-body-x10 text-text-x20" id="market-close-time">--</span>
+            </div>
+            <div class="self-stretch w-px bg-stroke-x40 kalshi-price-divider" aria-hidden="true"></div>
+            <div class="flex flex-col items-start gap-0.5 kalshi-price-column">
+              <div class="flex items-center gap-1 kalshi-now-label">
+                <span class="font-kalshi-sans typ-overline-x10 text-text-x20">Now</span>
+                <span class="select-none [&amp;_*]:select-none cursor-pointer kalshi-info-tip" aria-label="Live market data and its recent changes are provided by a third-party data provider. Data may be delayed or stale." title="Live market data and its recent changes are provided by a third-party data provider. Data may be delayed or stale.">
+                  <div style="display: flex; opacity: 0.3;">
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium mui-q7mezt" focusable="false" color="var(--text)" aria-hidden="true" viewBox="0 0 24 24" data-testid="InfoOutlinedIcon" size="16" style="font-size: 16px; vertical-align: middle;">
+                      <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"></path>
+                    </svg>
+                  </div>
+                </span>
+              </div>
+              <span class="inline-flex items-center [&amp;_span]:transition-all kalshi-now-value" id="btc-price-wrap">
+                <h2 class="m-0 font-kalshi-condensed typ-headline-x10 typ-tabular text-text-x10" style="font-size: 24px; line-height: 1.1;"><span id="btc-price">--</span></h2>
+              </span>
+              <span class="font-kalshi-sans font-normal typ-body-x10 typ-tabular text-text-x20" id="btc-delta">--</span>
+            </div>
+          </div>
+          <div class="bot-edge-brief"><span>BOT EDGE</span><strong id="intent-edge">--</strong><small id="intent-trend">WARMING UP</small></div>
+        </div>
+      </header>
+
+      <section class="chart-card">
+        <div class="market-countdown-wrap" aria-label="Time remaining until this market closes">
+          <h2 class="market-countdown-value font-kalshi-sans typ-tabular" id="market-countdown">--:--</h2>
+          <svg class="market-countdown-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M8 20H16V17C16 15.9 15.6083 14.9583 14.825 14.175C14.0417 13.3917 13.1 13 12 13C10.9 13 9.95833 13.3917 9.175 14.175C8.39167 14.9583 8 15.9 8 17V20ZM12 11C13.1 11 14.0417 10.6083 14.825 9.825C15.6083 9.04167 16 8.1 16 7V4H8V7C8 8.1 8.39167 9.04167 9.175 9.825C9.95833 10.6083 10.9 11 12 11ZM4 22V20H6V17C6 15.9833 6.2375 15.0292 6.7125 14.1375C7.1875 13.2458 7.85 12.5333 8.7 12C7.85 11.4667 7.1875 10.7542 6.7125 9.8625C6.2375 8.97083 6 8.01667 6 7V4H4V2H20V4H18V7C18 8.01667 17.7625 8.97083 17.2875 9.8625C16.8125 10.7542 16.15 11.4667 15.3 12C16.15 12.5333 16.8125 13.2458 17.2875 14.1375C17.7625 15.0292 18 15.9833 18 17V20H20V22H4Z"></path>
+            <path d="M12.0001 15C12.0001 15 15.0001 15.3347 15.0001 19H9.00006C9.00006 15.3348 12.0001 15 12.0001 15Z"></path>
+            <path d="M12 10C12 10 14.5 9.83264 14.5 8H9.5C9.5 9.83262 12 10 12 10Z"></path>
+          </svg>
+        </div>
+        <div class="chart-container">
+          <svg id="market-chart" width="911.609375" height="290" viewBox="0 0 911.609375 290" data-testid="knockout-chart-ready" style="touch-action: pan-y;" aria-label="Live Bitcoin price chart"></svg>
+        </div>
+        <div class="chart-footer">
+          <span aria-hidden="true"></span>
+          <div class="chart-tabs" role="tablist">
+            <button class="chart-tab active" data-period="live" type="button" role="tab" aria-selected="true">LIVE</button>
+            <button class="chart-tab" data-period="5m" type="button" role="tab" aria-selected="false">5M</button>
+            <button class="chart-tab" data-period="15m" type="button" role="tab" aria-selected="false">15M</button>
+            <button class="chart-tab" data-period="1h" type="button" role="tab" aria-selected="false">1H</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="market-signal-row">
+        <div><span>BOT FORECAST</span><strong class="prediction-probability" id="prediction-independent">--</strong></div>
+        <div><span>MARKET-ASSISTED</span><strong class="prediction-probability" id="prediction-assisted">--</strong></div>
+        <div><span>PREDICTION STATUS</span><strong id="prediction-status">WAITING</strong></div>
+        <div><span>FINALIZES</span><strong id="prediction-countdown">--:--</strong></div>
+      </section>
+
+      <section class="book-section">
+        <div class="section-tabs"><span class="active">TRADE UP</span><span>TRADE DOWN</span><span>YOUR POSITIONS</span><span>GRAPH</span></div>
+        <table class="markets-table" id="markets-table">
+          <thead><tr><th>SIDE</th><th>PRICE</th><th>CONTRACTS</th><th>TOTAL</th></tr></thead>
+          <tbody id="markets-body"><tr><td colspan="4" class="empty-state">Waiting for market data</td></tr></tbody>
+        </table>
+      </section>
+
+      <section class="positions-section">
+        <div class="section-title">OPEN POSITIONS <span id="pos-count">0</span></div>
+        <div class="positions-list" id="positions-list"><div class="empty-state">No open positions</div></div>
+      </section>
+    </section>
+
+    <aside class="trade-sidebar">
+      <section class="trade-card order-ticket" id="order-ticket" data-mode="buy" data-side="yes">
+        <div class="trade-card-head">
+          <div class="ticket-mode-tabs" role="tablist" aria-label="Order action">
+            <button class="ticket-mode-tab active" id="ticket-buy-tab" type="button" role="tab" aria-selected="true">BUY</button>
+            <button class="ticket-mode-tab" id="ticket-sell-tab" type="button" role="tab" aria-selected="false">SELL</button>
+          </div>
+          <button class="ticket-unit" id="ticket-unit" type="button" aria-label="Order quantity unit: shares">
+            SHARES
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+          </button>
+        </div>
+
+        <div class="ticket-body">
+          <div class="ticket-market">
+            <span class="tiny-bitcoin">₿</span>
+            <strong>
+              <span class="ticket-side-prefix" id="ticket-side-prefix"></span><span>BTC 15 min · </span><span id="ticket-market-target">--</span><span> target</span>
+            </strong>
+          </div>
+
+          <div class="ticket-outcomes" id="ticket-outcomes" role="radiogroup" aria-label="Choose an outcome">
+            <button class="ticket-outcome up active" id="ticket-up" type="button" role="radio" aria-checked="true">
+              UP <span id="ticket-up-price">--</span>
+            </button>
+            <button class="ticket-outcome down" id="ticket-down" type="button" role="radio" aria-checked="false">
+              DOWN <span id="ticket-down-price">--</span>
+            </button>
+          </div>
+
+          <div class="ticket-forecast" id="ticket-forecast" aria-live="polite">
+            <span>BOT FORECAST</span>
+            <strong id="ticket-forecast-primary">Waiting for market…</strong>
+            <small id="ticket-forecast-assisted"></small>
+          </div>
+
+          <label class="ticket-quantity-wrap" for="ticket-quantity">
+            <span>Shares</span>
+            <input id="ticket-quantity" type="number" inputmode="numeric" min="0" step="1" value="0" aria-describedby="ticket-feedback">
+          </label>
+
+          <div class="ticket-account" id="ticket-account">Predictions account · <span id="ticket-account-available">$0.00 available</span></div>
+
+          <dl class="ticket-quote" id="ticket-quote">
+            <div><dt>Average price</dt><dd id="ticket-average-price">--</dd></div>
+            <div>
+              <dt>Cost <span class="ticket-info" title="Includes the estimated taker fee">$</span></dt>
+              <dd id="ticket-cost">--</dd>
+            </div>
+            <div class="ticket-payout-row">
+              <dt>Max payout <small id="ticket-settlement-date">--</small></dt>
+              <dd><strong id="ticket-max-payout">$0.00</strong><small id="ticket-pnl">+$0.00</small></dd>
+            </div>
+          </dl>
+
+          <button class="ticket-submit" id="ticket-submit" type="button" disabled>
+            <span class="ticket-lightning" aria-hidden="true">ϟ</span>
+            <span id="ticket-submit-label">Buy with 1-Click</span>
+          </button>
+          <p class="ticket-feedback" id="ticket-feedback" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+      <section class="mini-summary">
+        <div><span>TOTAL P&amp;L</span><strong id="total-pnl">+$0.00</strong></div>
+        <div><span>WIN / LOSS</span><strong id="win-loss">0W / 0L</strong></div>
+        <div><span>ROI</span><strong id="roi-value">+0.0%</strong></div>
+        <div><span>TRADES / HR</span><strong id="trades-per-hour">0.0</strong></div>
+      </section>
+    </aside>
+  </main>
+
+  <div hidden aria-hidden="true">
+    <span id="chart-total"></span><span id="market-count"></span><span id="log-count"></span><span id="trade-log"></span>
+    <span id="stat-trades"></span><span id="stat-winrate"></span><span id="stat-avgedge"></span><span id="stat-best"></span><span id="stat-worst"></span><span id="stat-volume"></span><span id="stat-tph"></span><span id="stat-open"></span><span id="stat-profitfactor"></span><span id="stat-avgwin"></span><span id="stat-avgloss"></span><span id="stat-streak"></span><span id="stat-unrealized"></span><span id="stat-strategy"></span>
+  </div>
+  <script src="kalshi-chart.js"></script>
+  <script src="kalshi-header.js"></script>
+  <script src="kalshi-countdown.js"></script>
+  <script src="order-ticket.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

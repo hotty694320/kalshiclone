@@ -1,0 +1,8 @@
+In powershell:
+do in order:
+
+npm ci
+
+Copy-Item .env.example .env
+
+npm start
